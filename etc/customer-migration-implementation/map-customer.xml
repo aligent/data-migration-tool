@@ -7,14 +7,125 @@
 -->
 <map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
     <source>
+        <document_rules>
+            <!-- customer ignore eav-->
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <!-- ignore customer address eav -->
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
+            </ignore>
+        </document_rules>
         <field_rules>
+            <!-- customers -->
             <transform>
                 <field>customer_entity.entity_id</field>
-                <handler class="\Migration\Handler\PreExist\EntityIdResolver">
-                    <param name="foreignKeys" value="[self.default_billing:customer_address_entity.entity_id;self.default_shipping:customer_address_entity.entity_id]"/>
-                    <param name="self" value="customer_entity"/>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+            <transform>
+                <field>customer_entity.store_id</field>
+                <handler class="\Migration\Handler\Convert" >
+                    <param name="map" value="[1:3;3:3;6:7]"/>
                 </handler>
             </transform>
+            <transform>
+                <field>customer_entity.website_id</field>
+                <handler class="\Migration\Handler\CrossFieldConvert" >
+                    <param name="map" value="[1:2;3:2;6:7]"/>
+                    <param name="crossField" value="store_id"/>
+                </handler>
+            </transform>
+            <!-- customer addresses -->
+            <transform>
+                <field>customer_address_entity.parent_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_entity.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>customer_address_entity.entity_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+            <transform>
+                <field>customer_address_entity.store_id</field>
+                <handler class="\Migration\Handler\Convert" >
+                    <param name="map" value="[1:3;3:3;6:7]"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>customer_address_entity.website_id</field>
+                <handler class="\Migration\Handler\CrossFieldConvert" >
+                    <param name="map" value="[1:2;3:2;6:7]"/>
+                    <param name="crossField" value="store_id"/>
+                </handler>
+            </transform>
+            <!-- subscribers -->
+            <transform>
+                <field>newsletter_subscriber.subscriber_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+            <transform>
+                <field>newsletter_subscriber.customer_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" >
+                    <param name="relatedKey" value="customer_entity.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>newsletter_subscriber.store_id</field>
+                <handler class="\Migration\Handler\Convert" >
+                    <param name="map" value="[1:3;3:3;6:7]"/>
+                </handler>
+            </transform>
+            <ignore>
+                <field>newsletter_subscriber.added_at</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.dob</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.firstname</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.lastname</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.gender</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.postcode</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.segmentation</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_subscriber.tracking_id</field>
+            </ignore>
+            <!-- end custom -->
             <ignore>
                 <field>customer_entity.entity_type_id</field>
             </ignore>
@@ -60,6 +171,40 @@
         </field_rules>
     </source>
     <destination>
+        <document_rules>
+            <!-- customer ignore eav-->
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <!-- ignore customer address eav -->
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
+            </ignore>
+        </document_rules>
         <field_rules>
             <ignore>
                 <field>customer_entity.created_in</field>
