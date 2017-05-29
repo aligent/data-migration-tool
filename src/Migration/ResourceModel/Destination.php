@@ -15,6 +15,8 @@ class Destination extends AbstractResource
 {
     const CONFIG_DOCUMENT_PREFIX = 'dest_prefix';
 
+    const MODE_DELETE = 'mode_delete';
+
     /**
      * @var string
      */
@@ -60,7 +62,9 @@ class Destination extends AbstractResource
      */
     public function clearDocument($documentName)
     {
-        $this->getAdapter()->deleteAllRecords($this->addDocumentPrefix($documentName));
+        if($this->configReader->getOption(self::MODE_DELETE)) {
+            $this->getAdapter()->deleteAllRecords($this->addDocumentPrefix($documentName));
+        }
     }
 
     /**
