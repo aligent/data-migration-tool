@@ -1279,6 +1279,30 @@
                 <field>enterprise_giftcard_amount.entity_id</field>
                 <to>magento_giftcard_amount.row_id</to>
             </move>
+
+            <transform>
+                <field>customer_entity.entity_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+            <transform>
+                <field>customer_entity.default_billing</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_address_entity.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>customer_entity.default_shipping</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_address_entity.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>customer_address_entity.parent_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_entity.entity_id"/>
+                </handler>
+            </transform>
+
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
