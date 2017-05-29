@@ -60,6 +60,11 @@ class Helper
     protected $sourceDocuments;
 
     /**
+     * @var \Migration\Handler\ExistingDataSupport\EntityIdResolver
+     */
+    protected $entityIdResolver;
+
+    /**
      * @var \Migration\Config
      */
     protected $configReader;
@@ -76,7 +81,8 @@ class Helper
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         GroupsFactory $groupsFactory,
-        \Migration\Config $configReader
+        \Migration\Config $configReader,
+        \Migration\Handler\ExistingDataSupport\EntityIdResolver $entityIdResolver
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -84,6 +90,7 @@ class Helper
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->sourceDocuments = $this->readerGroups->getGroup('source_documents');
         $this->configReader = $configReader;
+        $this->entityIdResolver = $entityIdResolver;
     }
 
     /**
@@ -135,9 +142,10 @@ class Helper
             return;
         }
         $records = [];
+        $reverseIncrement = $this->entityIdResolver->getReverseIncrement($sourceDocName, 'entity_id');
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
-            $records[] = $record->getValue('entity_id');
+            $records[] = $record->getValue('entity_id') + $reverseIncrement;
         }
 
         $attributeIdsByType = [];
@@ -171,20 +179,29 @@ class Helper
             $attributeCodesById
         );
 
-        $this->setAttributeData($destinationRecords, $recordAttributesData, $attributeCodes);
+        $this->setAttributeData($destinationRecords, $recordAttributesData, $attributeCodes, $sourceDocName, $reverseIncrement);
     }
 
     public function setAttributeData(
         Record\Collection $destinationRecords,
         array $recordAttributesData,
-        array $attributeCodes
+        array $attributeCodes,
+        $sourceDocument = '',
+        $incrementOffset = 0
     ) {
+        foreach ($recordAttributesData as &$recordAttributeData) {
+            foreach ($recordAttributeData as $attribute => $value) {
+                if(is_numeric($value)) {
+                    $recordAttributeData[$attribute] = $recordAttributeData[$attribute] + $this->entityIdResolver->getIncrement($sourceDocument, $attribute);
+                }
+            }
+        }
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
-            if (isset($recordAttributesData[$record->getValue('entity_id')])) {
-                $recordEntityData = $recordAttributesData[$record->getValue('entity_id')];
-                if ($this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
-                    $recordEntityData = $this->upgradeCustomerHash($recordEntityData);
+            if (isset($recordAttributesData[$record->getValue('entity_id') + $incrementOffset])) {
+                $recordEntityData = $recordAttributesData[$record->getValue('entity_id') + $incrementOffset];
+                if ($option = $this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
+                    $recordEntityData = $this->upgradeCustomerHash($recordEntityData, $option);
                 }
                 $data = $record->getData();
                 $data = array_merge(
@@ -231,8 +248,10 @@ class Helper
                     'et' => $this->source->addDocumentPrefix($document)
                 ],
                 'COUNT(*)'
-            )
-            ->where('et.attribute_id NOT IN (?)', array_keys($this->skipAttributes[$attributeType]));
+            );
+        if(isset($this->skipAttributes[$attributeType]) && count($this->skipAttributes[$attributeType])) {
+            $query->where('et.attribute_id NOT IN (?)', array_keys($this->skipAttributes[$attributeType]));
+        }
         $count = $query->getAdapter()->fetchOne($query);
 
         return $count;
@@ -347,16 +366,23 @@ class Helper
      * @param array $recordAttributesData
      * @return array
      */
-    private function upgradeCustomerHash($recordAttributesData)
+    private function upgradeCustomerHash($recordAttributesData, $option = 1)
     {
         if (isset($recordAttributesData['password_hash'])) {
             $hash = $this->explodePasswordHash($recordAttributesData['password_hash']);
 
             if (strlen($hash[self::PASSWORD_HASH]) == 32) {
-                $recordAttributesData['password_hash'] = implode(
-                    ':',
-                    [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '0']
-                );
+                if($option == "3") {
+                    $recordAttributesData['password_hash'] = implode(
+                        ':',
+                        [hash('sha256', $hash[self::PASSWORD_HASH] + $hash[self::PASSWORD_SALT]), $hash[self::PASSWORD_SALT], 'ALIG_CUSTOM_1']
+                    );
+                } else {
+                    $recordAttributesData['password_hash'] = implode(
+                        ':',
+                        [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '0']
+                    );
+                }
             } elseif (strlen($hash[self::PASSWORD_HASH]) == 64) {
                 $recordAttributesData['password_hash'] = implode(
                     ':',
