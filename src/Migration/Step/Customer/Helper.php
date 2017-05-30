@@ -375,7 +375,7 @@ class Helper
                 if($option == "3") {
                     $recordAttributesData['password_hash'] = implode(
                         ':',
-                        [hash('sha256', $hash[self::PASSWORD_HASH] + $hash[self::PASSWORD_SALT]), $hash[self::PASSWORD_SALT], 'ALIG_CUSTOM_1']
+                        [hash('sha256', $hash[self::PASSWORD_HASH] + $hash[self::PASSWORD_SALT]), $hash[self::PASSWORD_SALT], '0:1']
                     );
                 } else {
                     $recordAttributesData['password_hash'] = implode(
