@@ -147,7 +147,7 @@ abstract class AbstractIntegrity implements StageInterface
                 $sourceDocument = $source->getDocument($sourceDocumentName);
                 $destinationDocument = $destination->getDocument($destinationDocumentName);
 
-                if (!isset($destDocuments[$destinationDocumentName]) || !$sourceDocument || !$destinationDocument) {
+                if ($destinationDocumentName && (!isset($destDocuments[$destinationDocumentName]) || !$sourceDocument || !$destinationDocument)) {
                     $this->notMappedDocuments[$type][$sourceDocumentName] = true;
                 } else {
                     if ($verifyFields) {
