@@ -2,13 +2,13 @@
 <groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
     <group name="source_documents">
         <document key="entity_id">customer_entity</document>
-        <document key="value_id">customer_entity_datetime</document>
         <document key="subscriber_id">newsletter_subscriber</document>
+        <document key="entity_id">customer_address_entity</document>
+        <document key="value_id">customer_entity_datetime</document>
         <document key="value_id">customer_entity_decimal</document>
         <document key="value_id">customer_entity_int</document>
         <document key="value_id">customer_entity_text</document>
         <document key="value_id">customer_entity_varchar</document>
-        <document key="entity_id">customer_address_entity</document>
         <document key="value_id">customer_address_entity_datetime</document>
         <document key="value_id">customer_address_entity_decimal</document>
         <document key="value_id">customer_address_entity_int</document>
