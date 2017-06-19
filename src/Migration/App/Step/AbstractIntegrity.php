@@ -193,17 +193,27 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function verifyFields($sourceDocument, $destinationDocument, $type)
     {
-        $sourceFields = $sourceDocument->getStructure()->getFields();
-        $destFields = $destinationDocument->getStructure()->getFields();
-        foreach ($sourceFields as $sourceField => $sourceFieldMetaData) {
-            $mappedField = $this->map->getFieldMap($sourceDocument->getName(), $sourceField, $type);
-            if ($mappedField) {
-                if (!isset($destFields[$mappedField])) {
-                    $this->notMappedDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
-                } else if ($sourceFieldMetaData['DATA_TYPE'] != $destFields[$mappedField]['DATA_TYPE']
-                    && !$this->map->isFieldDataTypeIgnored($sourceDocument->getName(), $sourceField, $type)
-                ) {
-                    $this->mismatchDocumentFieldDataTypes[$type][$sourceDocument->getName()][] = $sourceField;
+        if($sourceDocument && $destinationDocument) {
+            $sourceFields = $sourceDocument->getStructure()->getFields();
+            $destFields = $destinationDocument->getStructure()->getFields();
+            foreach ($sourceFields as $sourceField => $sourceFieldMetaData) {
+                $mappedField
+                    = $this->map->getFieldMap($sourceDocument->getName(),
+                    $sourceField, $type);
+                if ($mappedField) {
+                    if (!isset($destFields[$mappedField])) {
+                        $this->notMappedDocumentFields[$type][$sourceDocument->getName()][]
+                            = $mappedField;
+                    } else {
+                        if ($sourceFieldMetaData['DATA_TYPE']
+                            != $destFields[$mappedField]['DATA_TYPE']
+                            && !$this->map->isFieldDataTypeIgnored($sourceDocument->getName(),
+                                $sourceField, $type)
+                        ) {
+                            $this->mismatchDocumentFieldDataTypes[$type][$sourceDocument->getName()][]
+                                = $sourceField;
+                        }
+                    }
                 }
             }
         }
