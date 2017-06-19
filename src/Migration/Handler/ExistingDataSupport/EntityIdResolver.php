@@ -30,9 +30,9 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
 
     //TODO MAKE DI FOR REUSE
     protected $incrementMap = [
-        'customer_entity.entity_id' => 220000000,
-        'customer_address_entity.entity_id' => 330000000,
-        'newsletter_subscriber.subscriber_id' => 440000000
+        'customer_entity.entity_id' => 20000000,
+        'customer_address_entity.entity_id' => 20000000,
+        'newsletter_subscriber.subscriber_id' => 20000000
     ];
 
     protected $fkMap = [
