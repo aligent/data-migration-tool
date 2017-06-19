@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Customer;
 
+use Migration\Logger\InvalidAddressLogger;
 use Migration\ResourceModel\Adapter\Mysql;
 use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;
@@ -71,6 +72,10 @@ class Helper
 
     const UPGRADE_CUSTOMER_PASSWORD_HASH = 'upgrade_customer_password_hash';
 
+    protected $addressFileName = 'incompatible_addresses.csv';
+
+    protected $csvWriter;
+
     /**
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
@@ -82,7 +87,8 @@ class Helper
         ResourceModel\Destination $destination,
         GroupsFactory $groupsFactory,
         \Migration\Config $configReader,
-        \Migration\Handler\ExistingDataSupport\EntityIdResolver $entityIdResolver
+        \Migration\Handler\ExistingDataSupport\EntityIdResolver $entityIdResolver,
+        \Migration\Report\Csv $csv
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -91,6 +97,7 @@ class Helper
         $this->sourceDocuments = $this->readerGroups->getGroup('source_documents');
         $this->configReader = $configReader;
         $this->entityIdResolver = $entityIdResolver;
+        $this->csvWriter = $csv;
     }
 
     /**
@@ -203,6 +210,7 @@ class Helper
                 if ($option = $this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
                     $recordEntityData = $this->upgradeCustomerHash($recordEntityData, $option);
                 }
+                $recordEntityData = $this->addressTransform($record, $recordEntityData);
                 $data = $record->getData();
                 $data = array_merge(
                     array_fill_keys($attributeCodes, null),
@@ -212,6 +220,7 @@ class Helper
                 $record->setData($data);
             }
         }
+        $this->csvWriter->commitStaged($this->addressFileName);
     }
 
     /**
@@ -253,7 +262,6 @@ class Helper
             $query->where('et.attribute_id NOT IN (?)', array_keys($this->skipAttributes[$attributeType]));
         }
         $count = $query->getAdapter()->fetchOne($query);
-
         return $count;
     }
 
@@ -358,6 +366,56 @@ class Helper
                 );
             }
         }
+    }
+
+    protected function addressTransform($record, $recordsAttributesData, $maxLines = 2, $lineLength = 36) {
+        if(isset($recordsAttributesData['street'])) {
+            $address = $recordsAttributesData['street'];
+            if($this->isValidAddress($address, $maxLines, $lineLength)) {
+                return $recordsAttributesData;
+            }
+            $addressOneLine = str_replace("\n", '', $address);
+            $addressLineLength = strlen($addressOneLine);
+            $line = 0;
+            $result = [];
+            while($line < $maxLines - 1 && $addressLineLength > 0) {
+                $addressLineLength = strlen($addressOneLine);
+                $lineEnd = strrpos($addressOneLine, ' ', $lineLength - $addressLineLength);
+                $thisLine = substr($addressOneLine, 0, $lineEnd);
+                $addressOneLine = substr($addressOneLine, $lineEnd);
+                $addressLineLength = strlen($addressOneLine);
+                $result[] = $thisLine;
+                ++$line;
+            }
+            if($addressLineLength > 0) {
+                $result[] = substr($addressOneLine, 0, $lineLength);
+                if($addressLineLength > $lineLength) {
+                    $output = [
+                        'customer_id' => $record->getValue('parent_id'),
+                        'id' => $record->getValue('entity_id'),
+                        'street' => $address,
+                        'converted_to' =>  implode("\n", $result)
+                    ];
+                    $this->csvWriter->stageData($this->addressFileName, $output);
+                }
+            }
+            $recordsAttributesData['street'] = implode("\n", $result);
+            return $recordsAttributesData;
+        }
+        return $recordsAttributesData;
+    }
+
+    protected function isValidAddress($address, $maxLines, $lineLength) {
+        $lines = explode("\n", $address);
+        if(count($lines) > $maxLines) {
+            return false;
+        }
+        foreach ($lines as $line) {
+            if(strlen($line) > $lineLength) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
