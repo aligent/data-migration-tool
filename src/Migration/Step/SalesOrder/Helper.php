@@ -69,7 +69,12 @@ class Helper
      */
     public function getDocumentList()
     {
-        return ['sales_flat_order' => 'sales_order'];
+        return ['sales_flat_order' => 'sales_order',
+                'sales_flat_order_address' => 'sales_order_address',
+                'sales_flat_order_item' => 'sales_order_item',
+                'sales_flat_order_payment' => 'sales_order_payment',
+                'sales_flat_order_status_history' => 'sales_order_status_history'
+        ];
     }
 
     /**
