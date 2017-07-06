@@ -20,8 +20,63 @@
                 <document>sales_flat_order_item</document>
                 <to>sales_order_item</to>
             </rename>
+            <rename>
+                <document>sales_flat_order_payment</document>
+                <to>sales_order_payment</to>
+            </rename>
         </document_rules>
         <field_rules>
+            <!-- custom SALES ORDER PAYMENT -->
+            <move>
+                <field>sales_flat_order_payment.cc_last4</field>
+                <to>sales_order_payment.cc_last_4</to>
+            </move>
+            <ignore>
+                <field>sales_flat_order_payment.paybox_request_number</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.ideal_transaction_checked</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.cybersource_token</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.ideal_issuer_title</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.paybox_question_number</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.ideal_issuer_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.flo2cash_account_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.cc_raw_request</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.cc_raw_response</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.customer_payment_id</field>
+            </ignore>
+
+            <transform>
+                <field>sales_flat_order_payment.parent_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_order.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_payment.entity_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+
+
             <!-- custom SALES ORDER ADDRESS -->
 
             <transform>
