@@ -12,9 +12,77 @@
                 <document>sales_flat_order</document>
                 <to>sales_order</to>
             </rename>
+            <rename>
+                <document>sales_flat_order_address</document>
+                <to>sales_order_address</to>
+            </rename>
+            <rename>
+                <document>sales_flat_order_item</document>
+                <to>sales_order_item</to>
+            </rename>
         </document_rules>
         <field_rules>
-            <!-- custom -->
+            <!-- custom SALES ORDER ADDRESS -->
+
+            <transform>
+                <field>sales_flat_order_address.entity_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+            <transform>
+                <field>sales_flat_order_address.store_id</field>
+                <handler class="\Migration\Handler\Convert" >
+                    <param name="map" value="[1:3;3:3;6:7]"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_address.parent_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_order.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_address.customer_address_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_address_entity.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_address.customer_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="customer_entity.entity_id"/>
+                </handler>
+            </transform>
+            <!-- custom SALES ORDER ITEM -->
+            <move>
+                <field>sales_flat_order_item.hidden_tax_amount</field>
+                <to>sales_order_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_amount</field>
+                <to>sales_order_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_invoiced</field>
+                <to>sales_order_item.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_invoiced</field>
+                <to>sales_order_item.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_refunded</field>
+                <to>sales_order_item.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_refunded</field>
+                <to>sales_order_item.base_discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_canceled</field>
+                <to>sales_order_item.discount_tax_compensation_canceled</to>
+            </move>
+
+            <!-- custom SALES FLAT ORDER-->
             <ignore>
                 <field>sales_flat_order.onestepcheckout_customerfeedback</field>
             </ignore>
@@ -382,6 +450,30 @@
             </ignore>
 
             <!-- end custom -->
+
+            <!-- custom SALES ORDER ADDRESS -->
+            <ignore>
+                <field>sales_order_address.vat_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vat_is_valid</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vat_is_valid</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vat_request_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vat_request_date</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vat_request_success</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.giftregistry_item_id</field>
+            </ignore>
+
             <ignore>
                 <field>sales_order.send_email</field>
             </ignore>

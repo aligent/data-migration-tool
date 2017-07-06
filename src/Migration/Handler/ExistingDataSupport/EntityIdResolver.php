@@ -5,6 +5,7 @@
  */
 namespace Migration\Handler\ExistingDataSupport;
 
+use Migration\Handler\Placeholder;
 use Migration\ResourceModel\Adapter\Mysql;
 use Migration\ResourceModel\Record;
 use Migration\ResourceModel\Source;
@@ -30,9 +31,11 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
 
     //TODO MAKE DI FOR REUSE
     protected $incrementMap = [
-        'customer_entity.entity_id' => 20000000,
-        'customer_address_entity.entity_id' => 20000000,
-        'newsletter_subscriber.subscriber_id' => 20000000
+        'customer_entity.entity_id' => 2000000,
+        'customer_address_entity.entity_id' => 2000000,
+        'newsletter_subscriber.subscriber_id' => 2000000,
+        'sales_flat_order.entity_id' => 30000000,
+        'sales_flat_order_address.entity_id' => 30000000
     ];
 
     protected $fkMap = [
@@ -57,7 +60,6 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
     {
         $key = $table.'.'.$field;
         if(isset($this->fkMap[$key])) {
-
             $key = $this->fkMap[$key];
         }
         if(isset($this->incrementMap[$key])) {
