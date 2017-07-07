@@ -28,11 +28,69 @@
                 <document>sales_flat_invoice</document>
                 <to>sales_invoice</to>
             </rename>
+            <rename>
+                <document>sales_flat_invoice_item</document>
+                <to>sales_invoice_item</to>
+            </rename>
         </document_rules>
         <field_rules>
             <!-- custom SALES INVOICE ITEM -->
+            <transform>
+                <field>sales_flat_invoice_item.parent_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_invoice.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_invoice_item.order_item_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_order_item.item_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_invoice_item.entity_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
 
-
+            <move>
+                <field>sales_flat_invoice_item.hidden_tax_amount</field>
+                <to>sales_invoice_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice_item.base_hidden_tax_amount</field>
+                <to>sales_invoice_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <transform>
+                <field>sales_flat_invoice_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <ignore>
+                <field>sales_flat_invoice_item.shipment_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.is_nominal</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.sku_old</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.base_weee_tax_applied_row_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.navconnect_dimension_value_1</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.navconnect_dimension_value_2</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.size_scale_selected</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.shoe_size_scale</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.navconnect_ebay_transaction_item_id</field>
+            </ignore>
             <!-- custom SALES INVOICE -->
             <transform>
                 <field>sales_flat_invoice.order_id</field>
@@ -800,6 +858,43 @@
             </ignore>
             <ignore>
                 <field>sales_invoice.base_shipping_discount_tax_compensation_amnt</field>
+            </ignore>
+            <!-- custom SALES INVOICE ITEM -->
+            <ignore>
+                <field>sales_invoice_item.tax_ratio</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.hidden_tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.discount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.base_discount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.base_weee_tax_applied_row_amnt</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.osc_gift_wrap_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.base_osc_gift_wrap_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.hidden_tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice_item.discount_tax_compensation_canceled</field>
             </ignore>
         </field_rules>
     </destination>
