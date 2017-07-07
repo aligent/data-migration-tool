@@ -35,7 +35,8 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
         'customer_address_entity.entity_id' => 2000000,
         'newsletter_subscriber.subscriber_id' => 2000000,
         'sales_flat_order.entity_id' => 30000000,
-        'sales_flat_order_address.entity_id' => 30000000
+        'sales_flat_order_address.entity_id' => 30000000,
+        'sales_flat_order_payment.entity_id' => 30000000,
     ];
 
     protected $fkMap = [

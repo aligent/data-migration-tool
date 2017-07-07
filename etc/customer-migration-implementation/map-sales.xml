@@ -26,6 +26,77 @@
             </rename>
         </document_rules>
         <field_rules>
+            <!-- custom SALES ORDER ITEM -->
+            <move>
+                <field>sales_flat_order_item.hidden_tax_amount</field>
+                <to>sales_order_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_amount</field>
+                <to>sales_order_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_invoiced</field>
+                <to>sales_order_item.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_invoiced</field>
+                <to>sales_order_item.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_refunded</field>
+                <to>sales_order_item.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_refunded</field>
+                <to>sales_order_item.base_discount_tax_compensation_refunded</to>
+            </move>
+            <transform>
+                <field>sales_flat_order_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <ignore>
+                <field>sales_flat_order_item.is_nominal</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.sku_old</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.base_weee_tax_applied_row_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.navconnect_dimension_value_1</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.navconnect_dimension_value_2</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.size_scale_selected</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.shoe_size_scale</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_item.navconnect_ebay_transaction_item_id</field>
+            </ignore>
+            <transform>
+                <field>sales_flat_order_item.order_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_order.entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_item.store_id</field>
+                <handler class="\Migration\Handler\Convert" >
+                    <param name="map" value="[1:3;3:3;6:7]"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_order_item.item_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+            </transform>
+
+
             <!-- custom SALES ORDER PAYMENT -->
             <move>
                 <field>sales_flat_order_payment.cc_last4</field>
@@ -107,35 +178,6 @@
                     <param name="relatedKey" value="customer_entity.entity_id"/>
                 </handler>
             </transform>
-            <!-- custom SALES ORDER ITEM -->
-            <move>
-                <field>sales_flat_order_item.hidden_tax_amount</field>
-                <to>sales_order_item.discount_tax_compensation_amount</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.base_hidden_tax_amount</field>
-                <to>sales_order_item.base_discount_tax_compensation_amount</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.hidden_tax_invoiced</field>
-                <to>sales_order_item.discount_tax_compensation_invoiced</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.base_hidden_tax_invoiced</field>
-                <to>sales_order_item.base_discount_tax_compensation_invoiced</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.hidden_tax_refunded</field>
-                <to>sales_order_item.discount_tax_compensation_refunded</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.base_hidden_tax_refunded</field>
-                <to>sales_order_item.base_discount_tax_compensation_refunded</to>
-            </move>
-            <move>
-                <field>sales_flat_order_item.hidden_tax_canceled</field>
-                <to>sales_order_item.discount_tax_compensation_canceled</to>
-            </move>
 
             <!-- custom SALES FLAT ORDER-->
             <ignore>
@@ -552,6 +594,41 @@
             </ignore>
             <ignore>
                 <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+
+            <!-- custom SALES ORDER ITEM -->
+            <ignore>
+                <field>sales_order_item.tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.hidden_tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.discount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.base_discount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.base_weee_tax_applied_row_amnt</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.osc_gift_wrap_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.base_osc_gift_wrap_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.hidden_tax_canceled</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.discount_tax_compensation_canceled</field>
             </ignore>
         </field_rules>
     </destination>
