@@ -120,6 +120,23 @@ class Helper
         return isset($this->documentAttributeTypes[$document]) ? $this->documentAttributeTypes[$document] : null;
     }
 
+    public function getStartIncrements() {
+        return [
+            'customer_entity' => [
+                'field' => 'entity_id',
+                'start_at' => '25000'
+            ],
+            'newsletter_subscriber' => [
+                'field' => 'subscriber_id',
+                'start_at' => '25000'
+            ],
+            'customer_address_entity' => [
+                'field' => 'entity_id',
+                'start_at' => '25000'
+            ]
+        ];
+    }
+
     /**
      * @param string $attributeType
      * @param string $sourceDocName

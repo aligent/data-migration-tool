@@ -134,6 +134,15 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
 
             $attributeType = $this->helper->getAttributeType($sourceDocName);
 
+            $startIncrements = $this->helper->getStartIncrements();
+            if(isset($startIncrements[$sourceDocument->getName()])) {
+                $startIncrementData = $startIncrements[$sourceDocument->getName()];
+                $this->source->setLastLoadedRecord($sourceDocument->getName(),
+                    [
+                        $startIncrementData['field'] => $startIncrementData['start_at']
+                    ]);
+            }
+
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start(
