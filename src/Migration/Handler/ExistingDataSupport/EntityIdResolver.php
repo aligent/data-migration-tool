@@ -18,11 +18,8 @@ use Migration\Step\DatabaseStage;
  */
 class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Migration\Handler\HandlerInterface
 {
-    /**
-     * Map data
-     *
-     * @var array
-     */
+    const CURRENT = PHP_INT_MAX;
+
     protected $map;
     /**
      * @var Source
@@ -31,15 +28,26 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
 
     //TODO MAKE DI FOR REUSE
     protected $incrementMap = [
-        'customer_entity.entity_id' => 2000000,
-        'customer_address_entity.entity_id' => 2000000,
-        'newsletter_subscriber.subscriber_id' => 2000000,
+        'customer_entity.entity_id' => 3000000,
+        'customer_address_entity.entity_id' => 3000000,
+        'newsletter_subscriber.subscriber_id' => 3000000,
         'sales_flat_order.entity_id' => 30000000,
         'sales_flat_order_address.entity_id' => 30000000,
         'sales_flat_order_payment.entity_id' => 30000000,
         'sales_flat_order_item.item_id' => 30000000,
         'sales_flat_invoice.entity_id' => 30000000,
         'sales_flat_invoice_item.entity_id' => 30000000
+    ];
+
+    protected $versionedIncrementMap = [
+        'customer_entity.entity_id' => [
+            '0' => 2000000,
+            self::CURRENT => 3000000
+        ],
+        'customer_address_entity.entity_id' => [
+            '0' => 2000000,
+            self::CURRENT  => 3000000
+        ]
     ];
 
     protected $fkMap = [
@@ -83,9 +91,18 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
 
         if($recordToHandle->getValue($this->field)) {
             // if is a related key, lookup what the relative key has been implemented by
-            if ($this->relatedKey && isset($this->incrementMap[$this->relatedKey])) {
+            if ($this->relatedKey && isset($this->versionedIncrementMap[$this->relatedKey])) {
+                foreach ($this->versionedIncrementMap[$this->relatedKey] as $incVersion => $incValue) {
+                    if($recordToHandle->getValue($this->field) < $incVersion) {
+                        $incrementBy = $incValue;
+                        break;
+                    }
+                }
+            }
+            elseif ($this->relatedKey && isset($this->incrementMap[$this->relatedKey])) {
                 $incrementBy = $this->incrementMap[$this->relatedKey];
-            } // No related key given, and therefore is incrementing self
+            }
+            // No related key given, and therefore is incrementing self
             elseif (!$this->relatedKey && isset($this->incrementMap[$recordToHandle->getDocument()->getName() . '.' . $this->field])) {
                 $incrementBy = $this->incrementMap[$recordToHandle->getDocument()->getName() . '.' . $this->field];
             }
