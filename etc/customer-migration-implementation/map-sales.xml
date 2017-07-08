@@ -221,15 +221,17 @@
                 </handler>
             </transform>
             <transform>
+                <field>sales_flat_order_item.parent_item_id</field>
+                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver">
+                    <param name="relatedKey" value="sales_flat_order_item.item_id"/>
+                </handler>
+            </transform>
+            <transform>
                 <field>sales_flat_order_item.product_id</field>
                 <handler class="\Migration\Handler\ExistingDataSupport\SkuMapResolver" />
             </transform>
             <transform>
                 <field>sales_flat_order_item.sku</field>
-                <handler class="\Migration\Handler\ExistingDataSupport\SkuMapResolver" />
-            </transform>
-            <transform>
-                <field>sales_flat_order_item.parent_item_id</field>
                 <handler class="\Migration\Handler\ExistingDataSupport\SkuMapResolver" />
             </transform>
             <transform>
@@ -291,9 +293,8 @@
             </transform>
             <transform>
                 <field>sales_flat_order_payment.method</field>
-                <handler class="\Migration\Handler\CrossFieldConvert">
-                    <param name="map" value="[1:braintree;3:braintree;6:braintree]"/>
-                    <param name="crossField" value="store_id"/>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[paypal_express:braintree;payway_api:braintree;vme:braintree]"/>
                 </handler>
             </transform>
             <transform>

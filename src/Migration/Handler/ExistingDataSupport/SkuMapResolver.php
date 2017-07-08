@@ -48,15 +48,6 @@ class SkuMapResolver extends \Migration\Handler\AbstractHandler implements \Migr
                     }
                 }
             }
-            else if($this->field === 'parent_item_id' && ($parentId = $recordToHandle->getValue($this->field))) {
-                $sku = isset($this->getEntityIdSkuMap()[$parentId])? $this->getEntityIdSkuMap()[$parentId] : null;
-                if($sku) {
-                    $migratedEid = isset($this->getSkuEntityIdMap()[$sku])? $this->getSkuEntityIdMap()[$sku] : null;
-                    if($migratedEid) {
-                        $recordToHandle->setValue($this->field, $migratedEid );
-                    }
-                }
-            }
         }
         $recordToHandle->setValue($this->field, 0);
         return false;
@@ -78,7 +69,7 @@ class SkuMapResolver extends \Migration\Handler\AbstractHandler implements \Migr
 
     protected function getEntityIdSkuMap() {
         if(!isset($GLOBALS['eid_map'])) {
-            $GLOBALS['eid_map'] = json_decode(file_get_contents($this->dir->getRoot().'/'.self::DIRECTORY.'/'.self::SKU_EID_MAP), true);
+            $GLOBALS['eid_map'] = json_decode(file_get_contents($this->dir->getRoot().'/'.self::DIRECTORY.'/'.self::EID_SKU_MAP), true);
         }
         return  $GLOBALS['eid_map'];
     }

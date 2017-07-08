@@ -59,8 +59,6 @@ class Helper
     public function getEavAttributes()
     {
         return [
-            'reward_points_balance_refunded',
-            'reward_salesrule_points'
         ];
     }
 
@@ -69,11 +67,13 @@ class Helper
      */
     public function getDocumentList()
     {
-        return ['sales_flat_order' => 'sales_order',
+        return [
+                'sales_flat_order' => 'sales_order',
                 'sales_flat_order_address' => 'sales_order_address',
                 'sales_flat_order_item' => 'sales_order_item',
                 'sales_flat_order_payment' => 'sales_order_payment',
-                'sales_flat_order_status_history' => 'sales_order_status_history'
+                'sales_flat_invoice' => 'sales_invoice',
+                'sales_flat_invoice_item' => 'sales_invoice_item'
         ];
     }
 
