@@ -381,7 +381,7 @@
             </transform>
             <transform>
                 <field>sales_flat_order.increment_id</field>
-                <handler class="\Migration\Handler\ExistingDataSupport\EntityIdResolver" />
+                <handler class="\Migration\Handler\ExistingDataSupport\IncrementIdResolver" />
             </transform>
             <transform>
                 <field>sales_flat_order.store_id</field>
