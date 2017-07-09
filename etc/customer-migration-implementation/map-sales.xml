@@ -318,7 +318,7 @@
             <transform>
                 <field>sales_flat_order.shipping_method</field>
                 <handler class="\Migration\Handler\Convert" >
-                    <param name="map" value="[flatrateaus_flatrateaus:AP3C35_AP3C35;flatratenz_flatratenz:DHLEXP_DHLEXP]"/>
+                    <param name="map" value="[flatrateaus_flatrateaus:STEFPP_STEFPP;flatratenz_flatratenz:DHLEXP_DHLEXP]"/>
                 </handler>
             </transform>
             <transform>
