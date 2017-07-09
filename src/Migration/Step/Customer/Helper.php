@@ -124,15 +124,15 @@ class Helper
         return [
             'customer_entity' => [
                 'field' => 'entity_id',
-                'start_at' => '25000'
+                'start_at' => '529136'
             ],
             'newsletter_subscriber' => [
                 'field' => 'subscriber_id',
-                'start_at' => '25000'
+                'start_at' => '987215'
             ],
             'customer_address_entity' => [
                 'field' => 'entity_id',
-                'start_at' => '25000'
+                'start_at' => '577953'
             ]
         ];
     }
