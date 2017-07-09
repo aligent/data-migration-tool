@@ -106,8 +106,8 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
             elseif (!$this->relatedKey && isset($this->incrementMap[$recordToHandle->getDocument()->getName() . '.' . $this->field])) {
                 $incrementBy = $this->incrementMap[$recordToHandle->getDocument()->getName() . '.' . $this->field];
             }
+            $recordToHandle->setValue($this->field, $recordToHandle->getValue($this->field) + $incrementBy);
         }
-        //$oppositeRecord->setValue($this->field, $recordToHandle->getValue($this->field) + $incrementBy);
-        $recordToHandle->setValue($this->field, $recordToHandle->getValue($this->field) + $incrementBy);
+        $recordToHandle->setValue($this->field, $recordToHandle->getValue($this->field));
     }
 }
