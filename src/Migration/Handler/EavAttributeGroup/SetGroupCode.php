@@ -64,11 +64,12 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
         $this->validate($recordToHandle);
         $productAttributeSets = $this->getProductAttributeSets();
         if (!isset($productAttributeSets[$recordToHandle->getValue('attribute_set_id')])) {
-            $recordToHandle->setValue($this->field, null);
-            return;
+            // Group name is a required field, so give it sane fallback strategy where code => name mapping is not available.
+            $recordToHandle->setValue($this->field, $recordToHandle->getValue('attribute_group_name'));
+        } else {
+            $groupCode = $this->groupNameToCodeMap->getGroupCodeMap($recordToHandle->getValue('attribute_group_name'));
+            $recordToHandle->setValue($this->field, $groupCode);
         }
-        $groupCode = $this->groupNameToCodeMap->getGroupCodeMap($recordToHandle->getValue('attribute_group_name'));
-        $recordToHandle->setValue($this->field, $groupCode);
     }
 
     /**

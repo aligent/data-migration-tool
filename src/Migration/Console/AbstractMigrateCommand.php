@@ -41,9 +41,9 @@ class AbstractMigrateCommand extends Command
      * @var array
      */
     protected $verbosityLevels = [
-        2 => \Migration\Logger\Manager::LOG_LEVEL_INFO,
-        3 => \Migration\Logger\Manager::LOG_LEVEL_ERROR,
-        4 => \Migration\Logger\Manager::LOG_LEVEL_DEBUG
+        OutputInterface::VERBOSITY_VERBOSE => \Migration\Logger\Manager::LOG_LEVEL_INFO,
+        OutputInterface::VERBOSITY_VERY_VERBOSE => \Migration\Logger\Manager::LOG_LEVEL_ERROR,
+        OutputInterface::VERBOSITY_DEBUG => \Migration\Logger\Manager::LOG_LEVEL_DEBUG
     ];
 
     /**
@@ -102,7 +102,7 @@ class AbstractMigrateCommand extends Command
             $this->progress->reset();
         }
 
-        if ($output->getVerbosity() > 1) {
+        if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
             $this->logManager->process($this->verbosityLevels[$output->getVerbosity()]);
         } else {
             $this->logManager->process();
