@@ -31,12 +31,12 @@ class EntityIdResolver extends \Migration\Handler\AbstractHandler implements \Mi
         'customer_entity.entity_id' => 3000000,
         'customer_address_entity.entity_id' => 3000000,
         'newsletter_subscriber.subscriber_id' => 3000000,
-        'sales_flat_order.entity_id' => 30000000,
-        'sales_flat_order_address.entity_id' => 30000000,
-        'sales_flat_order_payment.entity_id' => 30000000,
-        'sales_flat_order_item.item_id' => 30000000,
-        'sales_flat_invoice.entity_id' => 30000000,
-        'sales_flat_invoice_item.entity_id' => 30000000
+        'sales_flat_order.entity_id' => 40000000,
+        'sales_flat_order_address.entity_id' => 40000000,
+        'sales_flat_order_payment.entity_id' => 40000000,
+        'sales_flat_order_item.item_id' => 40000000,
+        'sales_flat_invoice.entity_id' => 40000000,
+        'sales_flat_invoice_item.entity_id' => 40000000
     ];
 
     protected $versionedIncrementMap = [
