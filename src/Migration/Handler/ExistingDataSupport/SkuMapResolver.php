@@ -49,7 +49,7 @@ class SkuMapResolver extends \Migration\Handler\AbstractHandler implements \Migr
                 }
             }
         }
-        $recordToHandle->setValue($this->field, 0);
+        $recordToHandle->setValue($this->field, 'M1_'.$recordToHandle->getValue($this->field));
         return false;
     }
 
