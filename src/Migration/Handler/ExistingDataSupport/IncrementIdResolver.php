@@ -12,7 +12,7 @@ use Migration\Step\DatabaseStage;
  */
 class IncrementIdResolver extends \Migration\Handler\AbstractHandler implements \Migration\Handler\HandlerInterface
 {
-    const MIGRATION_PREFIX = 'M1_';
+    const MIGRATION_PREFIX = 'M1R_';
 
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
